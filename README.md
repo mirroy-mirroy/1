@@ -9,4 +9,18 @@
 
 
 # Методы
-(а тут будут методы)
+Команды
+
+# download reference / скачиваем референс
+wget https://ftp.ensembl.org/pub/release-108/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.108.gtf.gz
+wget https://ftp.ensembl.org/pub/release-108/fasta/saccharomyces_cerevisiae/dna/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+# unpack archives / распаковываем архивы
+gunzip Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa.gz
+gunzip Saccharomyces_cerevisiae.R64-1-1.108.gtf.gz
+## hisat: build index and prepare splice file / создаём индекс и готовим файл с данными сплайсинга в hisat2
+hisat2-build Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa yeast_index
+hisat2_extract_splice_sites.py Saccharomyces_cerevisiae.R64-1-1.108.gtf > yeast_splice_sites.txt
+## hisat: align & samtools: make sorted bam / выравниваем с помощью hisat2 и сортируем bam-файл с помощью samtools
+for sample in `ls *_1.fastq`; do base=$(basename $sample "_1.fastq"); \
+hisat2 -x yeast_index --known-splicesite-infile yeast_splice_sites.txt -p 8 \
+-1 ${base}_1.fastq -2 ${base}_2.fastq | samtools view --threads 2 -bS | samtools sort --threads 2 -o $base.bam; done

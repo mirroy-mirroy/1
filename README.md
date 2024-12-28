@@ -5,4 +5,5 @@
 **Ключевые слова:** S. Cerevisiae, D-молочная кислота, воспроизводимое исследование
 
 Сама статья находится в файле Article.docx
-![Uploading Annotation2.png…]()
+
+![Annotation2](https://github.com/user-attachments/assets/2de529ff-97bf-44ed-8867-6bb0cc6a6328)
